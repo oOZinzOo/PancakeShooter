@@ -39,7 +39,7 @@ async function buyOnlyone(targetAccount, amount) {
 
     var amountToBuyWith = web3.utils.toHex(amount);
     var privateKey = Buffer.from(targetAccount.privateKey.slice(2), 'hex')  ;
-    var abiArray = JSON.parse(JSON.parse(fs.readFileSync('onlyone-abi.json','utf-8')));
+    //var abiArray = JSON.parse(JSON.parse(fs.readFileSync('onlyone-abi.json','utf-8')));
     var tokenAddress = '0xb899db682e6d6164d885ff67c1e676141deaaa40'; // ONLYONE contract address
     var WBNBAddress = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'; // WBNB token address
 
