@@ -16,13 +16,13 @@ var BSC_FORK = Common.forCustomChain(
 )
 
 const pancakeSwapRouterAddress = '0x10ed43c718714eb63d5aa57b78b54704e256024e'
-const routerAbi = JSON.parse(fs.readFileSync('pancake-router-abi.json', 'utf-8'))
+const routerAbi = JSON.parse(fs.readFileSync('./config/pancake-router-abi.json', 'utf-8'))
 
-const accountInfo = JSON.parse(fs.readFileSync('accounts.json', 'utf-8'))
+const accountInfo = JSON.parse(fs.readFileSync('./config/accounts.json', 'utf-8'))
 
 // account: wallet that has fromAddress coin
 // Swapping fromAddress to toAddress
-function swap(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPrice, gasLimit) {
+async function swapExactTokensForTokens(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPrice, gasLimit) {
 
   const account = accountInfo[accountName]
   
@@ -30,7 +30,7 @@ function swap(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPr
     routerAbi, 
     pancakeSwapRouterAddress, 
     { 
-      from: targetAccount.address
+      from: account.address
     }
   )
 
@@ -67,4 +67,4 @@ function swap(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPr
 
 }
 
-exports.defualt = swap
+module.exports = swapExactTokensForTokens
