@@ -15,6 +15,17 @@ var BSC_FORK = Common.forCustomChain(
   'istanbul',
 )
 
+var BSC_testnet_FORK = Common.forCustomChain(
+                         'mainnet',
+                         {
+                           name: 'BSC testnet',
+                           networkId: 97,
+                           chainId: 97,
+                           url: 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+                         },
+                         'istanbul',
+                       )
+
 const pancakeSwapRouterAddress = '0x10ed43c718714eb63d5aa57b78b54704e256024e'
 const routerAbi = JSON.parse(fs.readFileSync('./config/pancake-router-abi.json', 'utf-8'))
 
@@ -25,7 +36,7 @@ const accountInfo = JSON.parse(fs.readFileSync('./config/accounts.json', 'utf-8'
 async function swapExactTokensForTokens(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPrice, gasLimit) {
 
   const account = accountInfo[accountName]
-  
+
   const contract = new web3.eth.Contract(
     routerAbi, 
     pancakeSwapRouterAddress, 
@@ -56,12 +67,11 @@ async function swapExactTokensForTokens(accountName, fromAddress, toAddress, amo
   const transaction = new Tx(
     rawTransaction, 
     {
-      "common": BSC_FORK
+      "common": BSC_testnet_FORK  // CHECK THIS
     }
   )
-  privateKey = Buffer.from(account.privateKey.slice(2), 'hex')
-  transaction.sign(privateKey)
-
+  let privateKeyBuffer = Buffer.from(account.privateKey, 'hex')
+  transaction.sign(privateKeyBuffer)
   const result = await web3.eth.sendSignedTransaction('0x' + transaction.serialize().toString('hex'))
   return result
 

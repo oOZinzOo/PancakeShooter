@@ -1,20 +1,27 @@
 const swapExactTokensForTokens = require("../services/swap")
 
+var gwei = 1000000000
+var gasLimit = 310603
+
+//function swap(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPrice, gasLimit)
+
 buy = async () => {
     try {
-        await swapExactTokensForTokens(
-            accountName = "top", 
-            fromAddress = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", // WBNB
-            toAddress = "0xb899db682e6d6164d885ff67c1e676141deaaa40", // Onlyone
-            amountIn = 300,
-            amountOutMin = 50000,
-            gasPrice = 5000000000,
-            gasLimit = 290000
+        var swapResult = await swapExactTokensForTokens(
+            "Tatar",    // accountName
+            "0x094616f0bdfb0b526bd735bf66eca0ad254ca81f", //fromAddress =    // testnet WBNB
+            "0x8301f2213c0eed49a7e28ae4c3e91722919b8b47", //toAddress   =    //testnet BUSD
+            String(1*(1000000000000000000) ),        // amountIn
+            "",      // amountOutMin
+            5*gwei,     // gasPrice
+            gasLimit    // gasLimit
         )
+        console.log( swapResult )
     }
     catch(err) {
         console.log(err)
     }
 }
+
 
 buy()
