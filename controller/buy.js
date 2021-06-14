@@ -9,12 +9,13 @@ buy = async () => {
     try {
         var swapResult = await swapExactTokensForTokens(
             "Tatar",    // accountName
-            "0x094616f0bdfb0b526bd735bf66eca0ad254ca81f", //fromAddress =    // testnet WBNB
+            "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd", //fromAddress =    // testnet WBNB
             "0x8301f2213c0eed49a7e28ae4c3e91722919b8b47", //toAddress   =    //testnet BUSD
             String(1*(1000000000000000000) ),        // amountIn
-            "",      // amountOutMin
-            5*gwei,     // gasPrice
-            gasLimit    // gasLimit
+            "0",      // amountOutMin
+            15*gwei,     // gasPrice
+            gasLimit,    // gasLimit
+            "pancakeTestnet"
         )
         console.log( swapResult )
     }

@@ -3,46 +3,61 @@ var Tx = require('ethereumjs-tx').Transaction
 var Web3 = require('web3')
 var Common = require('ethereumjs-common').default
 
-var web3 = new Web3(new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/'))
-var BSC_FORK = Common.forCustomChain(
-  'mainnet',
-  {
-    name: 'Binance Smart Chain Mainnet',
-    networkId: 56,
-    chainId: 56,
-    url: 'https://bsc-dataseed.binance.org/'
-  },
-  'istanbul',
-)
 
-var BSC_testnet_FORK = Common.forCustomChain(
-                         'mainnet',
-                         {
-                           name: 'BSC testnet',
-                           networkId: 97,
-                           chainId: 97,
-                           url: 'https://data-seed-prebsc-1-s1.binance.org:8545/'
-                         },
-                         'istanbul',
-                       )
-
-const pancakeSwapRouterAddress = '0x10ed43c718714eb63d5aa57b78b54704e256024e'
 const routerAbi = JSON.parse(fs.readFileSync('./config/pancake-router-abi.json', 'utf-8'))
-
 const accountInfo = JSON.parse(fs.readFileSync('./config/accounts.json', 'utf-8'))
 
 // account: wallet that has fromAddress coin
 // Swapping fromAddress to toAddress
-async function swapExactTokensForTokens(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPrice, gasLimit) {
+async function swapExactTokensForTokens(accountName, fromAddress, toAddress, amountIn, amountOutMin, gasPrice, gasLimit, network) {
+  let web3
+  let pancakeSwapRouterAddress
+  let BSC_FORK
+
+
+  if(network == 'pancake'){
+    pancakeSwapRouterAddress = '0x10ed43c718714eb63d5aa57b78b54704e256024e'
+    web3 = new Web3(new Web3.providers.HttpProvider('https://bsc-dataseed.binance.org/'))
+    BSC_FORK = Common.forCustomChain(
+      'mainnet',
+      {
+        name: 'Binance Smart Chain Mainnet',
+        networkId: 56,
+        chainId: 56,
+        url: 'https://bsc-dataseed.binance.org/'
+      },
+      'istanbul',
+    )
+  }
+  else if(network == 'pancakeTestnet'){
+    pancakeSwapRouterAddress = "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"
+    web3 = new Web3(new Web3.providers.HttpProvider('https://data-seed-prebsc-1-s1.binance.org:8545/'))
+    BSC_FORK = Common.forCustomChain(
+     'mainnet',
+     {
+       name: 'BSC testnet',
+       networkId: 97,
+       chainId: 97,
+       url: 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+     },
+     'istanbul',
+   )
+  }
+  else{
+    console.err("WRONG NETWORK")
+  }
+
 
   const account = accountInfo[accountName]
 
   const contract = new web3.eth.Contract(
-    routerAbi, 
-    pancakeSwapRouterAddress, 
+    routerAbi,
+
+    pancakeSwapRouterAddress,
     { 
       from: account.address
     }
+
   )
 
   const data = contract.methods.swapExactTokensForTokens(
@@ -67,7 +82,7 @@ async function swapExactTokensForTokens(accountName, fromAddress, toAddress, amo
   const transaction = new Tx(
     rawTransaction, 
     {
-      "common": BSC_testnet_FORK  // CHECK THIS
+      "common": BSC_FORK  // CHECK THIS
     }
   )
   let privateKeyBuffer = Buffer.from(account.privateKey, 'hex')
